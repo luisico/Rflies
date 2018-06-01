@@ -142,7 +142,7 @@ events = bind_rows(
     select(group, tube, unaccounted) %>%
     filter(unaccounted > 0) %>%
     uncount(unaccounted, .id="fly") %>%
-    mutate(days=1, event=ifelse(skip_unaccounted, -1, 0), date=as.Date(NA))
+    mutate(days=max(journal$days), event=ifelse(skip_unaccounted, -1, 0), date=as.Date(NA))
 )
 
 events = events %>% filter(event == 0 | event == 1)
