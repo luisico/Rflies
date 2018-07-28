@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Set options
 ```{r}
-inputfile = "tests.xlsx"
+inputfile = "test/tests.xlsx"
 worksheet = "dead"
 skip_unaccounted = FALSE        # TRUE/FALSE
 ```
