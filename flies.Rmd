@@ -18,8 +18,8 @@ skip_unaccounted = FALSE        # TRUE/FALSE
 
 # Process data
 ```{r include=FALSE}
-source('flies_lib.R')
-result = flies_process(inputfile, worksheet, skip_unaccounted)
+devtools::load_all("flies", reset=T)
+result = flies::process(inputfile, worksheet, skip_unaccounted)
 ```
 
 # Results
@@ -30,20 +30,6 @@ result$tally
 ```
 
 ## Graph
-
 ```{r}
-survival = survfit(Surv(days, event) ~ group, data = result$events)
-surv_median(survival)
-```
-
-And create a pretty graph:
-
-```{r}
-ggsurvplot(survival, data = result$events, xlab="Days", palette="jco")
-ggsurvplot(survival, data = result$events, xlab="Days", pval=T, conf.int=T, surv.median.line="hv", palette="jco")
-```
-
-We can also test for differences:
-```{r}
-survdiff(Surv(days, event) ~ group, data = result$events)
+flies::plot(result)
 ```
