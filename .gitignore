@@ -38,4 +38,5 @@ rsconnect/
 # Input/output files
 *.xlsx
 *.csv
-!/tests.xlsx
+!/test/*.xlsx
+.Rproj.user
