@@ -13,13 +13,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 inputfile = "test/tests.xlsx"
 worksheet = "dead"
-skip_unaccounted = FALSE        # TRUE/FALSE
+count_unaccounted = "auto"        # auto / yes / no
 ```
 
 # Process data
 ```{r include=FALSE}
 devtools::load_all("flies", reset=T)
-result = flies::process(inputfile, worksheet, skip_unaccounted)
+result = flies::process(inputfile, worksheet, count_unaccounted)
 ```
 
 # Results

@@ -1,7 +1,7 @@
 #' Transform data (reshape and clean)
 #'
 #' - Reshape the date column into rows (removing blanks).
-#' - Identify values marked with ":".
+#' - Identify final number of flies marked with ":".
 #' - Split dead and escaped events marked with "+".
 #' - Set correct formats for group, tube, dead, escaped and date columns,
 #' - Calculating day passed per group/tube.
@@ -100,9 +100,9 @@ tally = function(initial, final, journal) {
 #'
 #' @param journal Dataset with journal of flies
 #' @param tally Tally dataset
-#' @param skip_unaccounted Flag to skip unaccounted flies
+#' @param count_unaccounted Add unaccounted flies to events
 #' @return Events dataset
-generate_events = function(journal, tally, skip_unaccounted) {
+generate_events = function(journal, tally, count_unaccounted) {
     events = dplyr::bind_rows(
         journal %>%                                       # dead flies: 1
         dplyr::select(-escaped) %>%
@@ -116,11 +116,11 @@ generate_events = function(journal, tally, skip_unaccounted) {
         tidyr::uncount(escaped, .id="fly") %>%
         dplyr::mutate(event=as.integer(0)),
 
-        tally %>%                                         # unaccounted flies: 0  (-1 if skip_unaccounted=TRUE)
+        tally %>%                                         # unaccounted flies: 0  (-1 if count_unaccounted is TRUE)
         dplyr::select(group, unaccounted) %>%
         dplyr::filter(unaccounted > 0) %>%
         tidyr::uncount(unaccounted, .id="fly") %>%
-        dplyr::mutate(days=max(journal$days), event=ifelse(skip_unaccounted, -1, 0), date=as.Date(NA))
+        dplyr::mutate(days=max(journal$days), event=ifelse(count_unaccounted, -1, 0), date=as.Date(NA))
     )
 
     events %>% dplyr::filter(event == 0 | event == 1)
