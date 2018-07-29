@@ -6,16 +6,16 @@
 #' @return A list with tally, events and fit objects
 #' @export
 process = function(inputfile, worksheet = 'Data', skip_unaccounted = FALSE) {
-    # Import and transform data
+    ## Import and transform data
     input = readxl::read_excel(inputfile, sheet = worksheet)
     data = transform(input)
 
-    # Create datasets
+    ## Create datasets
     initial = get_initial(data)
     final =   get_final(data)
     journal = get_journal(data)
 
-    # Create tally and events
+    ## Create tally and events
     tally = tally(initial, final, journal)
     events = generate_events(journal, tally, skip_unaccounted)
 
