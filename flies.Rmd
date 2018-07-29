@@ -1,7 +1,7 @@
 ---
 title: "Flies Survival Analysis"
 author: "Luis Gracia <lgraval@gmail.com>"
-date: "May 6, 2018"
+date: "July 28, 2018"
 ---
 
 # Notebook general settings
