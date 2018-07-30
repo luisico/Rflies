@@ -44,5 +44,6 @@ process = function(inputfile, worksheet = 'Data', experiment_finished = 'auto') 
     ## Return a list with the tally and the events datasets
     list(tally = tally,
          events = events,
-         fit = fit)
+         fit = fit,
+         experiment_finished = experiment_finished)
 }
