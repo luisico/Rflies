@@ -1,7 +1,7 @@
 ---
 title: "Flies Survival Analysis"
 author: "Luis Gracia <lgraval@gmail.com>"
-date: "July 28, 2018"
+date: "July 29, 2018"
 ---
 
 # Notebook general settings
@@ -13,13 +13,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 inputfile = "test/tests.xlsx"
 worksheet = "dead"
-count_unaccounted = "auto"        # auto / yes / no
+experiment_finished = "auto"        # auto / yes / no
 ```
 
 # Process data
 ```{r include=FALSE}
 devtools::load_all("flies", reset=T)
-result = flies::process(inputfile, worksheet, count_unaccounted)
+result = flies::process(inputfile, worksheet, experiment_finished)
 ```
 
 # Results

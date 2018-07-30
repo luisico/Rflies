@@ -2,22 +2,24 @@
 #'
 #' @param infile Path to the input file
 #' @param worksheet Worksheet to parse from Excel
-#' @param count_unaccounted Count unaccounted flies in events
+#' @param experiment_finished Count unaccounted flies in events
 #' @return A list with tally, events and fit objects
 #' @export
-process = function(inputfile, worksheet = 'Data', count_unaccounted = 'auto') {
+process = function(inputfile, worksheet = 'Data', experiment_finished = 'auto') {
     ## Import and transform data
     input = readxl::read_excel(inputfile, sheet = worksheet)
     data = transform(input)
 
-    ## Guess if we need to count unaccounted flies
+    ## Guess if the experiment is finished
     ## Any value other than 'yes/no' maps to 'auto'
-    if (count_unaccounted == 'yes'){
-        count_unaccounted = TRUE
-    } else if (count_unaccounted == 'no') {
-        count_unaccounted = FALSE
+    if (experiment_finished == 'yes'){
+        experiment_finished = TRUE
+    } else if (experiment_finished == 'no') {
+        experiment_finished = FALSE
     } else {
-        count_unaccounted = all(is.na(data$marked))
+        ## Experiment is finished if any cell representing flies in the worksheet has
+        ## been marked with a colon (:)
+        experiment_finished = !all(is.na(data$marked))
     }
 
     ## Create datasets
@@ -27,7 +29,7 @@ process = function(inputfile, worksheet = 'Data', count_unaccounted = 'auto') {
 
     ## Create tally and events
     tally = tally(initial, final, journal)
-    events = generate_events(journal, tally, count_unaccounted)
+    events = generate_events(journal, tally, experiment_finished)
 
     ## The total number of events should be:
     ##expected_events = tally %>% dplyr::mutate(events = (dead + escaped + unaccounted)) %>% dplyr::group_by() %>% dplyr::summarise_if(is.numeric, sum) %>% dplyr::select(events)
