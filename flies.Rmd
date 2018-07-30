@@ -1,6 +1,6 @@
 ---
 title: "Flies Survival Analysis"
-author: "Luis Gracia <lgraval@gmail.com>"
+author: ""
 date: "July 29, 2018"
 ---
 
