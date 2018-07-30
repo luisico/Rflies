@@ -4,24 +4,23 @@ author: ""
 date: "July 29, 2018"
 ---
 
-# Notebook general settings
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
-# Set options and process data
-```{r include=FALSE}
+# Options
+```{r echo = TRUE}
 inputfile = "test/tests.xlsx"
 worksheet = "auto_count"
 experiment_finished = "auto"        # auto / yes / no
-
+```
+```{r}
 devtools::load_all("flies", reset=T)
 result = flies::process(inputfile, worksheet, experiment_finished)
 ```
 
-# Results
-
 ## Tally
+
 ```{r}
 result$tally
 ```
