@@ -10,6 +10,9 @@ process = function(inputfile, worksheet = 'Data', experiment_finished = 'auto') 
     input = readxl::read_excel(inputfile, sheet = worksheet)
     data = transform(input)
 
+    ## Guess timeseries format
+    format = guess_timeseries(data$entry)
+
     ## Guess if the experiment is finished
     ## Any value other than 'yes/no' maps to 'auto'
     if (experiment_finished == 'yes'){
@@ -36,13 +39,14 @@ process = function(inputfile, worksheet = 'Data', experiment_finished = 'auto') 
 
     ## Export to prism
     prismfile = paste(paste(tools::file_path_sans_ext(inputfile), worksheet, "prism", sep="_"), ".csv", sep="")
-    export_prism(events, prismfile)
+    export_prism(events, format, prismfile)
 
     ## Generate survfit
     fit = generate_fit(events)
 
     ## Return a list with the tally and the events datasets
-    list(tally = tally,
+    list(format = format,
+         tally = tally,
          events = events,
          fit = fit,
          experiment_finished = experiment_finished)

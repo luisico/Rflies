@@ -1,10 +1,10 @@
 #' Transform data (reshape and clean)
 #'
-#' - Reshape the date column into rows (removing blanks).
+#' - Reshape the entry column into rows (removing blanks).
 #' - Identify final number of flies marked with ":".
 #' - Split dead and escaped events marked with "+".
-#' - Set correct formats for group, tube, dead, escaped and date columns,
-#' - Calculating day passed per group/tube.
+#' - Set correct formats for group, tube, dead and escaped columns,
+#' - Calculating days or hours passed per group/tube.
 #'
 #' TODO:
 #' - Remove flies0
@@ -15,16 +15,15 @@
 #' @return Transform data
 transform = function(data) {
     data %>%
-        tidyr::gather(date, flies0, -tube, -group, na.rm=T) %>%
+        tidyr::gather(entry, flies0, -tube, -group, na.rm=T) %>%
         tidyr::separate(flies0, c("marked", "flies"), ":", remove=T, fill="left") %>%
         tidyr::separate(flies, c("dead", "escaped"), "[+]", fill="right") %>%
         dplyr::mutate(group = as.factor(group),
                tube = as.factor(tube),
                dead = as.numeric(dead),
                escaped = as.numeric(escaped),
-               date = janitor::excel_numeric_to_date(as.numeric(date))) %>%
-        dplyr::group_by(group, tube) %>%
-        dplyr::mutate(days = as.integer(date - min(date, na.rm=T)))
+               timeseries = entry_to_timeseries(entry)) %>%
+        dplyr::group_by(group, tube)
 }
 
 #' Generate dataset of initial flies per group/tube
@@ -34,7 +33,7 @@ transform = function(data) {
 #' @return Dataset with initial flies
 get_initial =  function(data) {
     data %>%
-        dplyr::filter(days == 0) %>%
+        dplyr::filter(timeseries == 0) %>%
         dplyr::select(-marked, -escaped) %>%
         dplyr::rename(initial = dead)
 }
@@ -59,7 +58,7 @@ get_final = function(data) {
 #' @return Dataset with journal of flies
 get_journal = function(data) {
     data %>%
-        dplyr::filter(days != 0) %>%
+        dplyr::filter(timeseries != 0) %>%
         dplyr::filter(is.na(marked)) %>%
         dplyr::select(-marked)
 }
@@ -75,13 +74,13 @@ get_journal = function(data) {
 #' @param journal Dataset with journal of flies
 #' @return Tally dataset
 tally = function(initial, final, journal) {
-    tally = initial %>% dplyr::select(-date, -days) %>%
+    tally = initial %>% dplyr::select(-entry, -timeseries) %>%
         dplyr::full_join(
             journal %>% dplyr::summarise(dead = sum(dead, na.rm=T), escaped = sum(escaped, na.rm=T)),
             by = c("group", "tube")
         ) %>%
         dplyr::full_join(
-            final %>% dplyr::select(-date, -days),
+            final %>% dplyr::select(-entry, -timeseries),
             by = c("group", "tube")
         ) %>%
         dplyr::mutate_all(~ dplyr::if_else(is.na(as.numeric(.x)), 0, as.numeric(.x))) %>%
@@ -120,7 +119,7 @@ generate_events = function(journal, tally, experiment_finished) {
         dplyr::select(group, unaccounted) %>%
         dplyr::filter(unaccounted > 0) %>%
         tidyr::uncount(unaccounted, .id="fly") %>%
-        dplyr::mutate(days=max(journal$days), event=ifelse(experiment_finished, -1, 0), date=as.Date(NA))
+        dplyr::mutate(timeseries=max(journal$timeseries), event=ifelse(experiment_finished, -1, 0), entry=as.Date(NA))
     )
 
     events %>% dplyr::filter(event == 0 | event == 1)
