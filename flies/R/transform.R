@@ -100,9 +100,9 @@ tally = function(initial, final, journal) {
 #'
 #' @param journal Dataset with journal of flies
 #' @param tally Tally dataset
-#' @param count_unaccounted Add unaccounted flies to events
+#' @param experiment_finished Add unaccounted flies to events for finished experiments
 #' @return Events dataset
-generate_events = function(journal, tally, count_unaccounted) {
+generate_events = function(journal, tally, experiment_finished) {
     events = dplyr::bind_rows(
         journal %>%                                       # dead flies: 1
         dplyr::select(-escaped) %>%
@@ -116,11 +116,11 @@ generate_events = function(journal, tally, count_unaccounted) {
         tidyr::uncount(escaped, .id="fly") %>%
         dplyr::mutate(event=as.integer(0)),
 
-        tally %>%                                         # unaccounted flies: 0  (-1 if count_unaccounted is TRUE)
+        tally %>%                                         # unaccounted flies: 0  (-1 if experiment_finished is TRUE)
         dplyr::select(group, unaccounted) %>%
         dplyr::filter(unaccounted > 0) %>%
         tidyr::uncount(unaccounted, .id="fly") %>%
-        dplyr::mutate(days=max(journal$days), event=ifelse(count_unaccounted, -1, 0), date=as.Date(NA))
+        dplyr::mutate(days=max(journal$days), event=ifelse(experiment_finished, -1, 0), date=as.Date(NA))
     )
 
     events %>% dplyr::filter(event == 0 | event == 1)

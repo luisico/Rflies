@@ -1,35 +1,36 @@
 ---
 title: "Flies Survival Analysis"
-author: "Luis Gracia <lgraval@gmail.com>"
-date: "July 28, 2018"
+author: ""
+date: "July 29, 2018"
 ---
 
-# Notebook general settings
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
-# Set options
-```{r}
+# Options
+```{r echo = TRUE}
 inputfile = "test/tests.xlsx"
-worksheet = "dead"
-count_unaccounted = "auto"        # auto / yes / no
+worksheet = "auto_count"
+experiment_finished = "auto"        # Options: auto / yes / no
 ```
 
-# Process data
-```{r include=FALSE}
+```{r}
 devtools::load_all("flies", reset=T)
-result = flies::process(inputfile, worksheet, count_unaccounted)
+result = flies::process(inputfile, worksheet, experiment_finished)
 ```
 
-# Results
+```{r include = experiment_finished == "auto", echo = FALSE}
+message("Note: experiment_finished was interpreted as: ", ifelse(result$experiment_finished, "yes", "no"))
+```
 
 ## Tally
+
 ```{r}
 result$tally
 ```
 
 ## Graph
 ```{r}
-flies::plot(result)
+flies::plot(result)$plot
 ```

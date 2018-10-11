@@ -1,6 +1,6 @@
 Package: flies
 Title: Flies Survival Tracking And Analysis
-Version: 0.0.0.9000
+Version: 2.1.0
 Authors@R: person("Luis", "Gracia", email = "lgraval@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 Depends: R (>= 3.5.0)
