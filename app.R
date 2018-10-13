@@ -18,9 +18,7 @@ ui = fluidPage(
                        "no" = "no")),
         htmlOutput("warning", class="error.shiny-output-error")
       ),
-      wellPanel(
-        uiOutput("downloadPrismCond")
-      )
+      uiOutput("downloadPrismCond")
     ),
 
     column(
@@ -61,7 +59,9 @@ server = function(input, output, session) {
 
   output$downloadPrismCond = renderUI({
     req(input$inputfile, input$worksheet)
-    downloadButton("downloadPrism", "Download Prism CSV")
+    wellPanel(
+        downloadButton("downloadPrism", "Download Prism CSV")
+    )
   })
 
   output$downloadPrism = downloadHandler(
