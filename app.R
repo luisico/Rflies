@@ -27,6 +27,9 @@ ui = fluidPage(
     )
   ),
 
+  hr(),
+
+
   fluidRow(
     column(
       12,
