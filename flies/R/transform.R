@@ -23,7 +23,9 @@ transform = function(data) {
                dead = as.numeric(dead),
                escaped = as.numeric(escaped)) %>%
         dplyr::group_by(group, tube) %>%
-        dplyr::mutate(timeseries = entry_to_timeseries(entry))}
+        dplyr::mutate(timeseries = entry_to_timeseries(entry),
+                      entry = entry_format(entry))
+}
 
 #' Generate dataset of initial flies per group/tube
 #'

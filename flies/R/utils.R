@@ -14,29 +14,40 @@ guess_timeseries = function(values) {
     }
 }
 
+#' Correct format of entry to date or hours
+#'
+#' @param values List of entries
+#' @return Formated entry in date or hours
+entry_format = function(values) {
+    format = guess_timeseries(values)
+    if (format == "days") {
+        values = entry_to_days(values)
+    }
+    values
+}
+
 #' Convert entry from excel to days or hours timeseries
 #'
 #' @param values List of entries
 #' @return Integer timeseries
 entry_to_timeseries = function(values) {
     format = guess_timeseries(values)
-    as.integer(do.call(paste("timeseries", "to", format, sep="_"), list(values)))
+    timeseries = as.integer(do.call(paste("entry", "to", format, sep="_"), list(values)))
+    timeseries - min(timeseries, na.rm=T)
 }
 
-#' Convert entry from excel to days timeseries
+#' Convert entry from excel to date
 #'
 #' @param values List of entries
 #' @return Integer timeseries in days
-timeseries_to_days = function(values) {
+entry_to_days = function(values) {
     values = janitor::excel_numeric_to_date(as.numeric(values))
-    values - min(values, na.rm=T)
 }
 
-#' Convert entry from excel to hour timeseries
+#' Convert entry from excel to hours
 #'
 #' @param values List of entries
 #' @return Integer timeseries in hours
-timeseries_to_hours = function(values) {
+entry_to_hours = function(values) {
     values = as.integer(sub("h$", "", values))
-    values - min(values, na.rm=T)
 }
