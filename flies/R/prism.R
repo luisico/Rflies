@@ -5,6 +5,7 @@
 #' @param events Events dataset
 #' @param outfile Path to the prims file
 #' @return Events dataset
+#' @export
 export_prism = function(events, format, outfile) {
     prism = events %>%
         dplyr::group_by(group) %>%
