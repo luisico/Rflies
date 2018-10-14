@@ -5,7 +5,7 @@
 #' @param experiment_finished Count unaccounted flies in events
 #' @return A list with tally, events and fit objects
 #' @export
-process = function(inputfile, worksheet = 'Data', experiment_finished = 'auto') {
+process = function(inputfile, worksheet = 'Data', experiment_finished = 'auto', prism = FALSE) {
     ## Import and transform data
     input = readxl::read_excel(inputfile, sheet = worksheet)
     data = transform(input)
@@ -38,8 +38,10 @@ process = function(inputfile, worksheet = 'Data', experiment_finished = 'auto') 
     ##expected_events = tally %>% dplyr::mutate(events = (dead + escaped + unaccounted)) %>% dplyr::group_by() %>% dplyr::summarise_if(is.numeric, sum) %>% dplyr::select(events)
 
     ## Export to prism
-    prismfile = paste(paste(tools::file_path_sans_ext(inputfile), worksheet, "prism", sep="_"), ".csv", sep="")
-    export_prism(events, format, prismfile)
+    if (prism) {
+        prismfile = paste(paste(tools::file_path_sans_ext(inputfile), worksheet, "prism", sep="_"), ".csv", sep="")
+        export_prism(events, format, prismfile)
+    }
 
     ## Generate survfit
     fit = generate_fit(events)

@@ -17,7 +17,7 @@ experiment_finished = "auto"        # Options: auto / yes / no
 
 ```{r}
 devtools::load_all("flies", reset=T)
-result = flies::process(inputfile, worksheet, experiment_finished)
+result = flies::process(inputfile, worksheet, experiment_finished, prism=T)
 ```
 
 ```{r include = experiment_finished == "auto", echo = FALSE}
