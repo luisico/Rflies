@@ -1,6 +1,5 @@
 library(shiny)
 library(DT)
-devtools::load_all("flies", reset=T)
 
 ## Frontend
 ui = fluidPage(
