@@ -15,7 +15,9 @@ ui = fluidPage(
         radioButtons("finished", "Experiment finished:",
                      c("Auto" = "auto",
                        "Yes" = "yes",
-                       "No" = "no")),
+                       "No" = "no"),
+                     inline = TRUE),
+        uiOutput("finishedAuto"),
         htmlOutput("warning", class="error.shiny-output-error")
       ),
       uiOutput("downloadPrismCond")
@@ -50,6 +52,15 @@ server = function(input, output, session) {
   surv = reactive({
     req(input$inputfile, input$worksheet)
     flies::process(input$inputfile$datapath, input$worksheet, input$finished)
+  })
+
+  output$finishedAuto = renderUI({
+      if (input$finished == "auto") {
+          p(paste("Auto value is ", ifelse(surv()$experiment_finished, "Yes", "No")),
+            style="color: gray; text-align: right; font-size: small")
+      } else {
+          ""
+      }
   })
 
   output$table = renderDataTable({
