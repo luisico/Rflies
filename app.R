@@ -15,7 +15,7 @@ ui = fluidPage(
         radioButtons("finished", "Experiment finished:",
                      c("Auto" = "auto",
                        "Yes" = "yes",
-                       "no" = "no")),
+                       "No" = "no")),
         htmlOutput("warning", class="error.shiny-output-error")
       ),
       uiOutput("downloadPrismCond")
