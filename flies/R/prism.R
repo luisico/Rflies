@@ -13,6 +13,6 @@ export_prism = function(events, format, outfile) {
         data.table::dcast(group+tube+timeseries+fly+event+id ~ group, value.var="event", fill="") %>%
         dplyr::select(-group, -tube, -fly, -event, -id)
 
-    colnames(prism) = c(format, "A", "B")
+    colnames(prism)[1] = format
     write.csv(prism, file=outfile)
 }
